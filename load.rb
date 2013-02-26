@@ -22,14 +22,13 @@ class Builder
       bucket = Bucket.new(nil, lazy = true)
       while line = fp.gets
         ts, type, mac, signal, noise, seq, *add = line.split(/\t/)
+        next unless type == "0x04"
         ts = Time.parse(ts)
-        if type == "0x04"
-          unless bucket.addable?(ts)
-            buckets << bucket
-            bucket = Bucket.new(ts)
-          end
-          bucket.add(ts, mac, signal.to_i)
+        unless bucket.addable?(ts)
+          buckets << bucket
+          bucket = Bucket.new(ts)
         end
+        bucket.add(ts, mac, signal.to_i)
       end
       buckets << bucket
       records = buckets.map{|bucket|

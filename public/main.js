@@ -1,6 +1,66 @@
 var alldata;
 
 $(function(){
+  load_chart();
+  load_pi();
+
+  setInterval(function(){
+    load_chart();
+    load_pi();
+  }, 1000 * 3);
+});
+
+var load_pi = function(){
+  $.getJSON("/api/hist", function(obj){
+    var data = [];
+    for(var key in obj) {
+      data.push([key, obj[key]]);
+    }
+    data.sort(function(a, b) { return b[1] - a[1]; });
+
+    pi_chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'pi_chart',
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        marginLeft: 0
+      },
+      animation : false,
+      title: {
+        text: 'ベンダー分布'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+        percentageDecimals: 1
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            color: '#000000',
+            connectorColor: '#000000',
+          formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ parseInt(this.percentage) +' %';
+          }
+          }
+        },
+        series : {
+          animation : false
+        }
+      },
+      series: [{
+        type: 'pie',
+        name: '比率',
+        data: data
+      }]
+    });
+  });
+};
+
+var load_chart = function(){
   $.getJSON("/api/all", function(data){
     alldata = data;
     
@@ -76,4 +136,4 @@ $(function(){
       }]
     });
   });
-});
+};
