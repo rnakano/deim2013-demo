@@ -40,8 +40,13 @@ Thread.start {
 get '/api/all' do
   content_type :json
   $lock.synchronize do
-    JSON.dump($records.map{|r|
-                [r.ts.to_js, r.count]
+    JSON.dump({
+                :all => $records.map{|r|
+                  [r.ts.to_js, r.count]
+                },
+                :apple => $records.map{|r|
+                  [r.ts.to_js, r.hist["Apple"]]
+                }
               })
   end
 end

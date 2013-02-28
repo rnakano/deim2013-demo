@@ -62,7 +62,8 @@ var load_pi = function(){
 
 var load_chart = function(){
   $.getJSON("/api/all", function(data){
-    alldata = data;
+    alldata = data.all;
+    var appledata = data.apple;
     
     chart = new Highcharts.Chart({
       chart: {
@@ -99,13 +100,13 @@ var load_chart = function(){
       },
       plotOptions: {
         area: {
-          fillColor: {
-            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
-            stops: [
-              [0, Highcharts.getOptions().colors[0]],
-              [1, 'rgba(2,0,0,0)']
-            ]
-          },
+          // fillColor: {
+          //   linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+          //   stops: [
+          //     [0, Highcharts.getOptions().colors[0]],
+          //     [1, 'rgba(2,0,0,0)']
+          //   ]
+          // },
           lineWidth: 1,
           marker: {
             enabled: false,
@@ -131,8 +132,12 @@ var load_chart = function(){
       
       series: [{
         type: 'area',
-        name: '検出数',
-        data: data
+        name: 'ALL',
+        data: data.all
+      },{
+        type: 'area',
+        name: 'Apple',
+        data: data.apple        
       }]
     });
   });
